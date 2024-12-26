@@ -33,11 +33,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 	stb	
 )
 
-set_target_properties(${PROJECT_NAME}
-	PROPERTIES
-	RESOURCE "${RESOURCES}"
-)
-
 target_include_directories(${PROJECT_NAME}
 	PUBLIC
 	../includes
@@ -47,15 +42,22 @@ target_include_directories(${PROJECT_NAME}
 	${Vulkan_INCLUDE_DIRS}
 )
 
-add_custom_command(
-	TARGET ${PROJECT_NAME}
-	POST_BUILD
-	COMMAND ${CMAKE_COMMAND} -E make_directory
-			$<TARGET_FILE_DIR:${PROJECT_NAME}>/resources
-	COMMAND ${CMAKE_COMMAND} -E copy_directory
-		${CMAKE_CURRENT_SOURCE_DIR}/resources
-		$<TARGET_FILE_DIR:${PROJECT_NAME}>/resources
-)
+if(RESOURCES)
+	set_target_properties(${PROJECT_NAME}
+		PROPERTIES
+		RESOURCE "${RESOURCES}"
+	)
+
+	add_custom_command(
+		TARGET ${PROJECT_NAME}
+		POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E make_directory
+				$<TARGET_FILE_DIR:cpp_boilerplate>/resources
+		COMMAND ${CMAKE_COMMAND} -E copy_directory
+			${CMAKE_CURRENT_SOURCE_DIR}/resources
+			$<TARGET_FILE_DIR:cpp_boilerplate>/resources
+	)
+endif()
 
 if(WIN32)
     add_custom_command(
