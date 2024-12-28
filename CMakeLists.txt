@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 
-set(PROJECT_NAME imgui_boilerplate) 
+set(PROJECT_NAME cpp_boilerplate) 
 project(${PROJECT_NAME} LANGUAGES CXX)
-
 
 # GoogleTest requires at least C++14
 set(CMAKE_CXX_STANDARD 17)
@@ -27,9 +26,9 @@ endif()
 add_subdirectory(sources)
 add_subdirectory(libraries)
 
-option(BP_BUILD_TESTS "Build tests" ON)
-if(BP_BUILD_TESTS)
-    add_subdirectory(tests)
+option(USE_UNIT_TESTS "Build tests" ON)
+if(USE_UNIT_TESTS)
+    add_subdirectory(tests/unit_tests)
 endif()
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
