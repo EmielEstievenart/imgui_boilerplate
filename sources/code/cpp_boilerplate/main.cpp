@@ -13,13 +13,17 @@
 //   the backend itself (imgui_impl_vulkan.cpp), but should PROBABLY NOT be used by your own engine/app code.
 // Read comments in imgui_impl_vulkan.h.
 
+#include "stb/stb_image.h"
+
 #include "imgui/imgui.h"
 #include "imgui_impl_sdl3.hpp"
 #include "imgui_impl_vulkan.hpp"
 #include <stdio.h>          // printf, fprintf
-#include <stdlib.h>         // abort
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_vulkan.h>
+#include "vulkan_data.hpp"
+#include "helpers/image_helper.hpp"
+
 
 // This example doesn't compile with Emscripten yet! Awaiting SDL3 support.
 #ifdef __EMSCRIPTEN__
@@ -37,30 +41,6 @@
 #define APP_USE_VULKAN_DEBUG_REPORT
 #endif
 
-// Data
-static VkAllocationCallbacks*   g_Allocator = nullptr;
-static VkInstance               g_Instance = VK_NULL_HANDLE;
-static VkPhysicalDevice         g_PhysicalDevice = VK_NULL_HANDLE;
-static VkDevice                 g_Device = VK_NULL_HANDLE;
-static uint32_t                 g_QueueFamily = (uint32_t)-1;
-static VkQueue                  g_Queue = VK_NULL_HANDLE;
-static VkDebugReportCallbackEXT g_DebugReport = VK_NULL_HANDLE;
-static VkPipelineCache          g_PipelineCache = VK_NULL_HANDLE;
-static VkDescriptorPool         g_DescriptorPool = VK_NULL_HANDLE;
-
-static ImGui_ImplVulkanH_Window g_MainWindowData;
-static uint32_t                 g_MinImageCount = 2;
-static bool                     g_SwapChainRebuild = false;
-
-static void check_vk_result(VkResult err)
-{
-    if (err == 0)
-        return;
-    fprintf(stderr, "[vulkan] Error: VkResult = %d\n", err);
-    if (err < 0)
-        abort();
-}
-
 #ifdef APP_USE_VULKAN_DEBUG_REPORT
 static VKAPI_ATTR VkBool32 VKAPI_CALL debug_report(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType, uint64_t object, size_t location, int32_t messageCode, const char* pLayerPrefix, const char* pMessage, void* pUserData)
 {
@@ -77,6 +57,8 @@ static bool IsExtensionAvailable(const ImVector<VkExtensionProperties>& properti
             return true;
     return false;
 }
+
+
 
 static VkPhysicalDevice SetupVulkan_SelectPhysicalDevice()
 {
@@ -227,7 +209,7 @@ static void SetupVulkan(ImVector<const char*> instance_extensions)
     {
         VkDescriptorPoolSize pool_sizes[] =
         {
-            { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1 },
+            { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 100 },
         };
         VkDescriptorPoolCreateInfo pool_info = {};
         pool_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
@@ -459,7 +441,7 @@ int main(int, char**)
     init_info.QueueFamily = g_QueueFamily;
     init_info.Queue = g_Queue;
     init_info.PipelineCache = g_PipelineCache;
-    init_info.DescriptorPool = g_DescriptorPool;
+    //init_info.DescriptorPool = g_DescriptorPool;
     init_info.RenderPass = wd->RenderPass;
     init_info.Subpass = 0;
     init_info.MinImageCount = g_MinImageCount;
@@ -467,6 +449,7 @@ int main(int, char**)
     init_info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
     init_info.Allocator = g_Allocator;
     init_info.CheckVkResultFn = check_vk_result;
+    init_info.DescriptorPoolSize        = 20;
     ImGui_ImplVulkan_Init(&init_info);
 
     // Load Fonts
@@ -489,6 +472,10 @@ int main(int, char**)
     bool show_demo_window = true;
     bool show_another_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+    MyTextureData my_texture;
+    bool ret = LoadTextureFromFile("resources/test.jpg", &my_texture);
+    IM_ASSERT(ret);
 
     // Main loop
     bool done = false;
@@ -540,6 +527,11 @@ int main(int, char**)
             static int counter = 0;
 
             ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+
+
+            ImGui::Text("pointer = %p", my_texture.DS);
+            ImGui::Text("size = %d x %d", my_texture.Width, my_texture.Height);
+            ImGui::Image((ImTextureID)my_texture.DS, ImVec2(my_texture.Width, my_texture.Height));
 
             ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
             ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state

@@ -1,13 +1,19 @@
 set(SOURCES
 	code/cpp_boilerplate/main.cpp
+	code/cpp_boilerplate/vulkan_data.cpp
+	code/cpp_boilerplate/vulkan_data.hpp
 	code/cpp_boilerplate/imgui_impl_sdl3.cpp
 	code/cpp_boilerplate/imgui_impl_sdl3.hpp
 	code/cpp_boilerplate/imgui_impl_vulkan.cpp
 	code/cpp_boilerplate/imgui_impl_vulkan.hpp
+	code/cpp_boilerplate/helpers/image_helper.hpp
+	code/cpp_boilerplate/helpers/image_helper.cpp
+
 )
 
 set(RESOURCES
 	resources/some_data.txt
+	resources/test.jpg
 )
 
 set(INCLUDES
@@ -24,11 +30,12 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 	imgui
 	SDL3::SDL3-shared 
 	${Vulkan_LIBRARIES}
+	stb	
 )
 
 set_target_properties(${PROJECT_NAME}
 	PROPERTIES
-	RESOURCE ${RESOURCES}
+	RESOURCE "${RESOURCES}"
 )
 
 target_include_directories(${PROJECT_NAME}

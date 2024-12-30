@@ -85,6 +85,7 @@
 #ifndef IMGUI_DISABLE
 #include "imgui_impl_vulkan.hpp"
 #include <stdio.h>
+#include <stdlib.h>         // abort
 #ifndef IM_MAX
 #define IM_MAX(A, B)    (((A) >= (B)) ? (A) : (B))
 #endif
@@ -411,16 +412,6 @@ static uint32_t ImGui_ImplVulkan_MemoryType(VkMemoryPropertyFlags properties, ui
         if ((prop.memoryTypes[i].propertyFlags & properties) == properties && type_bits & (1 << i))
             return i;
     return 0xFFFFFFFF; // Unable to find memoryType
-}
-
-static void check_vk_result(VkResult err)
-{
-    ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
-    if (!bd)
-        return;
-    ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
-    if (v->CheckVkResultFn)
-        v->CheckVkResultFn(err);
 }
 
 // Same as IM_MEMALIGN(). 'alignment' must be a power of two.
@@ -1241,7 +1232,16 @@ VkDescriptorSet ImGui_ImplVulkan_AddTexture(VkSampler sampler, VkImageView image
 {
     ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
     ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
-    VkDescriptorPool pool = bd->DescriptorPool ? bd->DescriptorPool : v->DescriptorPool;
+    VkDescriptorPool pool;
+    if (bd->DescriptorPool)
+    {
+        pool = bd->DescriptorPool;
+    }
+    else
+    {
+        pool = v->DescriptorPool;
+    }
+    //VkDescriptorPool pool = bd->DescriptorPool ? bd->DescriptorPool : v->DescriptorPool;
 
     // Create Descriptor Set:
     VkDescriptorSet descriptor_set;
@@ -1953,6 +1953,15 @@ void ImGui_ImplVulkan_InitMultiViewportSupport()
 void ImGui_ImplVulkan_ShutdownMultiViewportSupport()
 {
     ImGui::DestroyPlatformWindows();
+}
+
+void check_vk_result(VkResult err)
+{
+    if (err == 0)
+        return;
+    fprintf(stderr, "[vulkan] Error: VkResult = %d\n", err);
+    if (err < 0)
+        abort();
 }
 
 //-----------------------------------------------------------------------------

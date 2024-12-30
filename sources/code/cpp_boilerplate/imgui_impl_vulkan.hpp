@@ -208,4 +208,6 @@ struct ImGui_ImplVulkanH_Window
     }
 };
 
+void check_vk_result(VkResult err);
+
 #endif // #ifndef IMGUI_DISABLE
