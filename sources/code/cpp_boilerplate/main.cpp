@@ -22,7 +22,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_vulkan.h>
 #include "imgui_base/vulkan_data.hpp"
-#include "imgui_helpers/image_helper.hpp"
+#include "imgui_helpers/image_helper.hpp" 
 
 
 // This example doesn't compile with Emscripten yet! Awaiting SDL3 support.
@@ -144,16 +144,16 @@ static void SetupVulkan(ImVector<const char*> instance_extensions)
         VkDebugReportCallbackCreateInfoEXT debug_report_ci = {};
         debug_report_ci.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
         debug_report_ci.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT | VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT;
-        debug_report_ci.pfnCallback = debug_report;
+        debug_report_ci.pfnCallback = debug_report; 
         debug_report_ci.pUserData = nullptr;
-        err = f_vkCreateDebugReportCallbackEXT(g_Instance, &debug_report_ci, g_Allocator, &g_DebugReport);
+        err = f_vkCreateDebugReportCallbackEXT(g_Instance, &debug_report_ci, g_Allocator, &g_DebugReport); 
         check_vk_result(err);
 #endif
     }
 
     // Select Physical Device (GPU)
     g_PhysicalDevice = SetupVulkan_SelectPhysicalDevice();
-
+    
     // Select graphics queue family
     {
         uint32_t count;
@@ -161,18 +161,19 @@ static void SetupVulkan(ImVector<const char*> instance_extensions)
         VkQueueFamilyProperties* queues = (VkQueueFamilyProperties*)malloc(sizeof(VkQueueFamilyProperties) * count);
         vkGetPhysicalDeviceQueueFamilyProperties(g_PhysicalDevice, &count, queues);
         for (uint32_t i = 0; i < count; i++)
-            if (queues[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
+            if (queues[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)  
             {
-                g_QueueFamily = i;
+                g_QueueFamily = i; 
                 break;
             }
+
         free(queues);
         IM_ASSERT(g_QueueFamily != (uint32_t)-1);
     }
 
-    // Create Logical Device (with 1 queue)
+    // Create Logical Device (with 1 queue)  
     {
-        ImVector<const char*> device_extensions;
+        ImVector<const char*> device_extensions; 
         device_extensions.push_back("VK_KHR_swapchain");
 
         // Enumerate physical device extension
@@ -517,16 +518,28 @@ int main(int, char**)
         ImGui_ImplSDL3_NewFrame();
         ImGui::NewFrame();
 
+        ImGuiWindowFlags initial_window_flags = 0;
+        initial_window_flags |= ImGuiWindowFlags_NoTitleBar;
+        initial_window_flags |= ImGuiWindowFlags_NoMove;
+        initial_window_flags |= ImGuiWindowFlags_NoResize;
+
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
         if (show_demo_window)
             ImGui::ShowDemoWindow(&show_demo_window);
 
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
         {
+            int sdl_x;
+            int sdl_y;
+            SDL_GetWindowPosition(window, &sdl_x, &sdl_y);
+
+            ImGui::SetNextWindowPos(ImVec2(sdl_x, sdl_y));           // place the next window in the top left corner (0,0)
+            ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize); // make the next window fullscreen
+            ImGui::Begin("imgui window", NULL, initial_window_flags); // create a window
+
             static float f = 0.0f;
             static int counter = 0;
 
-            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
 
 
             ImGui::Text("pointer = %p", my_texture.DS);
