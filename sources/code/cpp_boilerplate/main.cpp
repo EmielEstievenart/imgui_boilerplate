@@ -16,13 +16,13 @@
 #include "stb/stb_image.h"
 
 #include "imgui/imgui.h"
-#include "imgui_impl_sdl3.hpp"
-#include "imgui_impl_vulkan.hpp"
+#include "imgui_base/imgui_impl_sdl3.hpp"
+#include "imgui_base/imgui_impl_vulkan.hpp"
 #include <stdio.h>          // printf, fprintf
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_vulkan.h>
-#include "vulkan_data.hpp"
-#include "helpers/image_helper.hpp"
+#include "imgui_base/vulkan_data.hpp"
+#include "imgui_helpers/image_helper.hpp"
 
 
 // This example doesn't compile with Emscripten yet! Awaiting SDL3 support.

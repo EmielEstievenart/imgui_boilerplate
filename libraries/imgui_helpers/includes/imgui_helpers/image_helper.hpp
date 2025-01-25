@@ -1,5 +1,5 @@
 #include "vulkan/vulkan.h"
-#include "string.h"
+#include <string.h>
 
 // A struct to manage data related to one image in vulkan
 struct MyTextureData

@@ -1,14 +1,5 @@
 set(SOURCES
 	code/cpp_boilerplate/main.cpp
-	code/cpp_boilerplate/vulkan_data.cpp
-	code/cpp_boilerplate/vulkan_data.hpp
-	code/cpp_boilerplate/imgui_impl_sdl3.cpp
-	code/cpp_boilerplate/imgui_impl_sdl3.hpp
-	code/cpp_boilerplate/imgui_impl_vulkan.cpp
-	code/cpp_boilerplate/imgui_impl_vulkan.hpp
-	code/cpp_boilerplate/helpers/image_helper.hpp
-	code/cpp_boilerplate/helpers/image_helper.cpp
-
 )
 
 set(RESOURCES
@@ -28,6 +19,8 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} PRIVATE 
 	imgui
+	imgui_base
+	imgui_helpers
 	SDL3::SDL3-shared 
 	${Vulkan_LIBRARIES}
 	stb	

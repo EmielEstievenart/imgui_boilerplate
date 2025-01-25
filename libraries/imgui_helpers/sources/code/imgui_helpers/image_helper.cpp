@@ -1,8 +1,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
-#include "image_helper.hpp"
-#include "cpp_boilerplate/vulkan_data.hpp"
-#include "cpp_boilerplate/imgui_impl_vulkan.hpp"
+#include "imgui_helpers/image_helper.hpp"
+#include "imgui_base/vulkan_data.hpp"
+#include "imgui_base/imgui_impl_vulkan.hpp"
 
 // Helper function to find Vulkan memory type bits. See ImGui_ImplVulkan_MemoryType() in imgui_impl_vulkan.cpp
 uint32_t findMemoryType(uint32_t type_filter, VkMemoryPropertyFlags properties)
