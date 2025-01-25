@@ -30,7 +30,7 @@ function(target_add_cppcheck)
     list_to_string(PREFIX "--suppress=" OUTPUT "TARGET_ADD_CPPCHECK_SUPPRESSIONS_STRING" LIST ${TARGET_ADD_CPPCHECK_SUPPRESSIONS})
 
     #create a string from the ignore folders
-    list_to_string(PREFIX "-i${CMAKE_SOURCE_DIR}/" OUTPUT "TARGET_ADD_CPPCHECK_IGNORE_FOLDERS_STRING" LIST ${TARGET_ADD_CPPCHECK_IGNORE_FOLDERS})
+    list_to_string(PREFIX "-i" OUTPUT "TARGET_ADD_CPPCHECK_IGNORE_FOLDERS_STRING" LIST ${TARGET_ADD_CPPCHECK_IGNORE_FOLDERS})
 
     #create a string from the defines
     list_to_string(PREFIX "-D" OUTPUT "TARGET_ADD_CPPCHECK_DEFINES_STRING" LIST ${TARGET_ADD_CPPCHECK_DEFINES})
@@ -56,7 +56,6 @@ function(target_add_cppcheck)
         COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/cppcheck
         COMMAND echo Running cppcheck with the following command: ${CPPCHECK_COMMAND}
         COMMAND ${CPPCHECK_COMMAND}
-        VERBATIM
         USES_TERMINAL
     )
 
@@ -64,6 +63,5 @@ function(target_add_cppcheck)
     add_custom_target(
         ${TARGET_ADD_CPPCHECK_TARGET}_cppcheck_clean
         COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_BINARY_DIR}/cppcheck
-        VERBATIM
     )
 endfunction()
